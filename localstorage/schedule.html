@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>schedule</title>
+  <link rel="stylesheet" href="css/sample.css">
+
+</head>
+
+<body>
+  <header>
+
+  </header>
+
+  <body>
+
+
+    <main>
+      <div id="controller">
+        <input type="button" id="add-button" value="予定">
+        <input type="button" id="save" value="登録">
+        <input type="button" id="clear" value="全削除">
+
+      </div>
+      <div id="sticky-note-container">
+      </div>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th id="prev">&laquo;</th>
+            <th id="title" colspan="5">2022/04</th>
+            <th id="next">&raquo;</th>
+          </tr>
+
+          <tr>
+            <th>Sun</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+          </tr>
+        </thead>
+
+
+        <tbody>
+
+
+        </tbody>
+
+      </table>
+      <tfoot>
+
+      </tfoot>
+
+    </main>
+  </body>
+  <footer>
+
+  </footer>
+
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+  <script>
+
+
+    // 登録
+    $('#save').on('click', function () {
+      const text = $('#text1').val();
+      // localStorage.setItem('memo', text);
+      const jsonData = JSON.stringify(text);
+      console.log(jsonData);
+      localStorage.setItem('memo', jsonData);
+
+    })
+
+    //削除
+    $('#clear').on('click', function () {
+
+      localStorage.removeItem('memo');
+      $('#text1').val('');
+    })
+
+    if (localStorage.getItem('memo')) {
+      // const text = localStorage.getItem('memo');
+      // $('#text1').val(text);
+      const jsonData = localStorage.getItem('memo');
+      console.log(jsonData);
+      const date = JSON.parse(jsonData);
+      // $('#text1').val(text);
+    }
+
+    $('#save').on('click', function () {
+      const text = $()
+
+    })
+
+    //json
+
+
+
+
+    // 追加
+    function getNewNote() {
+      return '<div class="note">' +
+        '<input type="text" id="text1">' +
+        '<input class="delete-button" type="button" value="削除">' +
+        '<input data-color="#e00020" class="color-button" type="button" value="赤">' +
+        '<input data-color="#e0ff20" class="color-button" type="button" value="黄">' +
+        '</div>';
+    }
+
+    function appendFunctions($note) {
+      $note.draggable();
+
+      $note.children(".delete-button").on('click', function () {
+        $(this).parents('.note').remove();
+      });
+
+      $note.children(".color-button").on('click', function () {
+        const color = $(this).data('color');
+        $(this).parents('.note').css('background-color', color);
+      });
+    }
+
+    $('#add-button').on('click', function () {
+      var $note = $(getNewNote());
+      appendFunctions($note);
+
+      $('#sticky-note-container').append($note);
+    });
+
+    //カレンダー
+
+
+    {
+      let year = 2022;
+      let month = 3;//4月 0からはじまる
+
+      function getCalendarHead() {
+        const dates = [];
+        const d = new Date(year, month, 0).getDate();
+        const n = new Date(year, month, 1).getDay();
+
+        for (let i = 0; i < n; i++) {
+          //30
+          //29,30
+          //28,29,30
+          dates.unshift({
+            date: d - i,
+            isToday: false,
+            isDisabled: true,
+          });
+        }
+        return dates;
+      }
+
+      function getCalendarBody() {
+        const dates = [];//date 日付 day 曜日
+        const lastDate = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 1; i <= lastDate; i++) {
+          dates.push({
+            date: i,
+            isToday: false,
+            isDisabled: false,
+          });
+        }
+        return dates;
+      }
+
+
+
+
+      function getCalendarTail() {
+        const dates = [];
+        const lastDay = new Date(year, month + 1, 0).getDay();
+
+        for (let i = 1; i < 7 - lastDay; i++) {
+          dates.push({
+            date: i,
+            isToday: false,
+            isDisabled: true,
+          })
+        }
+        return dates;
+      }
+
+
+
+
+
+      function createCalendar() {
+        const tbody = document.querySelector('tbody');
+
+        while (tbody.firstChild) {
+          tbody.removeChild(tbody.firstChild);
+        }
+
+        const title = `${year}/${month + 1}`;
+        document.getElementById('title').textContent = title;
+
+
+        const dates = [
+          ...getCalendarHead(),
+          ...getCalendarBody(),
+          ...getCalendarTail(),
+        ];
+
+        const weeks = [];
+        const weeksCount = dates.length / 7;
+        for (let i = 0; i < weeksCount; i++) {
+          weeks.push(dates.splice(0, 7));
+        }
+
+        weeks.forEach(week => {
+          const tr = document.createElement('tr');
+          week.forEach(date => {
+            const td = document.createElement('td');
+
+            td.textContent = date.date;
+            if (date.isToday) {
+              td.classList.add('today');
+            }
+            if (date.isDisabled) {
+              td.classList.add('disabled');
+            }
+
+            tr.appendChild(td);
+          });
+          document.querySelector('tbody').appendChild(tr);
+        })
+      }
+
+      document.getElementById('prev').addEventListener('click', () => {
+        month--;
+        if (month < 0) {
+          year--;
+          month = 11;
+        }
+
+        createCalendar();
+      });
+
+      document.getElementById('next').addEventListener('click', () => {
+        month++;
+        if (month > 11) {
+          year++;
+          month = 0;
+        }
+
+        createCalendar();
+      });
+      createCalendar();
+
+
+
+      // getCalendarHead();
+      // getCalendarBody();
+      // getCalendarTail();
+
+
+    }
+
+
+  </script>
+
+</body>
+
+</html>

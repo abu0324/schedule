@@ -1,0 +1,92 @@
+body {
+    font-size: 30px;
+
+}
+
+table {
+    border: 2px;
+    solid: #eee;
+
+}
+
+tr {
+    width: 700px;
+    height: 10px;
+}
+
+thead,
+tfoot {
+    background: #eee;
+}
+
+th {
+    padding: 8px;
+    text-align: center;
+    width: 200px;
+    height: 0px;
+    font-size: 20px;
+
+}
+
+
+td {
+    padding: 8px;
+    width: 200px;
+    height: 100px;
+    text-align: center;
+}
+
+/* 日付を薄くする */
+
+td.disabled {
+    opacity: 0.3;
+}
+
+td.today {
+    font-weight: bold;
+}
+
+
+#prev,
+#next {
+    cursor: pointer;
+}
+
+/* 翌月 */
+
+
+/* 追加 */
+
+#text1 {
+    height: 60px;
+}
+
+#sticky-note-container {
+    height: 400px;
+}
+
+.note {
+    background-color: aliceblue;
+    padding: 5px;
+    cursor: pointer;
+    width: 180px;
+    height: 110px;
+}
+
+.note>input[type="text"] {
+    width: 90%;
+    height: 5rem;
+}
+
+#sticky-note-container {
+    height: 40px;
+}
+
+
+tbody td:first-child {
+    color: red;
+}
+
+table td:last-child {
+    color: blue;
+}
